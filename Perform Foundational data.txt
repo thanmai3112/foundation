@@ -1,0 +1,89 @@
+
+
+pin storage,dataproc,dataflow,bigquery,dataprep
+
+then click on storage->create bucket-> project id as name of bucket->create
+
+go to bigqyuery -> click on project id->click on 'create dataset' -> dataset Id = lab ->then click on create dataset button
+
+then click on project id arrow then click on lab (to check if its created)
+
+open console
+
+gsutil cp gs://cloud-training/gsp323/lab.csv .
+
+cat lab.csv
+
+gsutil cp gs://cloud-training/gsp323/lab.schema .
+
+cat lab.schema
+
+
+
+copy the content from console and then
+click create table
+
+in create table from select google cloud storage 
+
+and in select file from GCS bucket -> type  gs://cloud-training/gsp323/lab.csv
+
+table name - customers
+click edit as text
+and paste data u copied from console
+then click create table
+click on customers
+
+click on dataproc->clusters -> create cluster and then press create
+
+click on cluster -> vm instances ->ssh
+
+in ssh -> run ->  hdfs dfs -cp gs://cloud-training/gsp323/data.txt /data.txt 
+	
+open dataflow-> jobs ->Create job from template->job name = lab-transform
+			dataflow template =Text Files on Cloud Storage to BigQuery
+			-> copy url from lab 
+   ->click run job
+
+->points earned
+
+dataproc->jobs ->submit job -> cluster->select cluster 
+	->job -type , main class or jar, jar files, arguments details copy paste from lab
+->then submit
+
+->task2 done
+
+-> click on dataprep
+->click gcs edit button -> paste 'gs://cloud-training/gsp323/runs.csv' ->click go
+
+then click continue 
+
+last column right click -> filter rows->column values->contains
+
+->in pattern to match -> copy pattern from lab-> delete matching rows->then add
+
+change all column names by rename 
+then click run
+
+->task3 completed
+
+api& services-> credentials->create cred->api key ->copy api key
+
+export API_KEY= yourapikey
+
+nano request.json
+
+{
+  "config": {
+      "encoding":"FLAC",
+      "languageCode": "en-US"
+  },
+  "audio": {
+      "uri":"gs://cloud-training/gsp323/task4.flac"
+  }
+}
+
+curl -s -X POST -H "Content-Type: application/json" --data-binary @request.json "https://speech.googleapis.com/v1/speech:recognize?key=${API_KEY}" > result.json
+
+gsutil cp result.json gs://PROJECT-marking/task4-gcs.result
+
+cat result.json	
